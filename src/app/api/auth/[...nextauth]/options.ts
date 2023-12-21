@@ -5,6 +5,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import connect from "@/utils/db";
 import Users from "@/models/Users";
+import { JWT } from "next-auth/jwt";
+import { User } from "next-auth";
+import { Session } from "next-auth";
 
 export const options: NextAuthOptions = {
   providers: [
@@ -71,12 +74,12 @@ export const options: NextAuthOptions = {
 
   callbacks: {
     // Ref: https://authjs.dev/guides/basics/role-based-access-control#persisting-the-role
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT; user?: User }) {
       if (user) token.role = user.role;
       return token;
     },
     // If you want to use the role in client components
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (session?.user) session.user.role = token.role;
       return session;
     },
