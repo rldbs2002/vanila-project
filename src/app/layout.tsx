@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import AuthProvider from "./context/AuthProvider";
-import Navbar from "./components/Navbar";
+import AuthProvider from "./contexts/AuthProvider";
+import MuiTheme from "./theme/MuiTheme";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,10 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <Navbar />
-          <main className="flex justify-center items-start p-6 min-h-screen">
-            {children}
-          </main>
+          <MuiTheme>
+            <main>{children}</main>
+          </MuiTheme>
         </AuthProvider>
       </body>
     </html>

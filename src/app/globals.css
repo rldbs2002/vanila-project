@@ -18,10 +18,19 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
+  background: linear-gradient(to bottom,
+      #FFF,
+      /* 시작 색상: 흰색 */
+      #F6F9FC
+      /* 끝 색상: 옅은 베이지색 */
+    );
+  /* background: linear-gradient(
       to bottom,
-      transparent,
+      #F6F9FC,
       rgb(var(--background-end-rgb))
     )
-    rgb(var(--background-start-rgb));
+    rgb(var(--background-start-rgb)); */
+
+  /* Style for paragraphs and images */
+
 }
