@@ -29,6 +29,23 @@ export async function getRequestData(id: any) {
   return res.json();
 }
 
+export async function getRequestsData() {
+  try {
+    const res = await fetch(`${apiUrl}/requests`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch data. Status: ${res.status}`);
+    }
+
+    return res.json();
+  } catch (error: any) {
+    console.error("Error fetching data:", error.message);
+    throw error;
+  }
+}
+
 export async function getShippingData() {
   const res = await fetch(`${apiUrl}/shipping`, {
     cache: "no-store",
