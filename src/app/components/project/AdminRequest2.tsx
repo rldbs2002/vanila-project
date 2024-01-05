@@ -38,28 +38,27 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   "::placeholder": { color: theme.palette.text.disabled },
 }));
 
-const AdminRequest2 = ({ requestData }: any) => {
+const AdminRequest2 = () => {
   const router = useRouter();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchCriteria, setSearchCriteria] = useState("userId");
   const [filterStatus, setFilterStatus] = useState("1"); // Default: Show Not Arrived
+  const [requestData, setRequestData] = useState({});
 
-  console.log(requestData);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getRequestsData();
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const result = await getRequestsData();
+        setRequestData(result);
+      } catch (error: any) {
+        console.error("Error fetching data:", error.message);
+      }
+    };
 
-  //       setRequestData(result);
-  //     } catch (error: any) {
-  //       console.error("Error fetching data:", error.message);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
+    fetchData();
+  }, []);
 
   // Handler for status radio button
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
