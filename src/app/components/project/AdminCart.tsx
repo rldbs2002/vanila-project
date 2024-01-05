@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -13,16 +13,14 @@ import {
   Button,
   ToggleButton,
   ToggleButtonGroup,
-  Grid,
-  Radio,
   Card,
+  Radio,
 } from "@mui/material";
 import Link from "next/link";
 import { StyledTableCell } from "../StyledComponents";
 import { useRouter } from "next/navigation";
 import { statusNames } from "@/utils/constants";
 import { Paragraph } from "../Typography";
-import { getRequestsData } from "@/app/lib/data";
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   height: 44,
@@ -38,36 +36,36 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   "::placeholder": { color: theme.palette.text.disabled },
 }));
 
-const AdminRequest2 = ({ requestData }: any) => {
+const AdminCart = ({ data }: any) => {
   const router = useRouter();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchCriteria, setSearchCriteria] = useState("userId");
-  const [filterStatus, setFilterStatus] = useState("1"); // Default: Show Not Arrived
+  const [filterStatus, setFilterStatus] = useState("3");
+
+  console.log(data);
+
+  // Filter function based on search criteria and status
+  const filteredData = data.filter((item: any) => {
+    // Case-insensitive search by user ID or email
+    const searchTermLowerCase = searchTerm.toLowerCase();
+    const userFieldToSearch =
+      searchCriteria === "userId" ? item.user : item.userEmail;
+    const isMatchingUser = userFieldToSearch
+      .toLowerCase()
+      .includes(searchTermLowerCase);
+
+    // Filter by status
+    const isMatchingStatus =
+      filterStatus === "all" || item.status.toString() === filterStatus;
+
+    return isMatchingUser && isMatchingStatus;
+  });
 
   // Handler for status radio button
   const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterStatus(event.target.value);
   };
-
-  // Filter function based on search criteria and status
-  const filteredData = Array.isArray(requestData)
-    ? requestData.filter((item: any) => {
-        // Case-insensitive search by user ID or email
-        const searchTermLowerCase = searchTerm.toLowerCase();
-        const userFieldToSearch =
-          searchCriteria === "userId" ? item.user : item.userEmail;
-        const isMatchingUser = userFieldToSearch
-          .toLowerCase()
-          .includes(searchTermLowerCase);
-
-        // Filter by status
-        const isMatchingStatus =
-          filterStatus === "all" || item.status.toString() === filterStatus;
-
-        return isMatchingUser && isMatchingStatus;
-      })
-    : [];
 
   return (
     <>
@@ -78,8 +76,9 @@ const AdminRequest2 = ({ requestData }: any) => {
           fontWeight: "bold",
         }}
       >
-        Admin Requests
+        Admin Cart
       </Paragraph>
+
       <div
         style={{
           display: "flex",
@@ -103,19 +102,19 @@ const AdminRequest2 = ({ requestData }: any) => {
         <div style={{ display: "flex" }}>
           <div style={{ marginRight: "10px" }}>
             <Radio
-              value="1"
-              checked={filterStatus === "1"}
+              value="3"
+              checked={filterStatus === "3"}
               onChange={handleStatusChange}
             />
-            <label>Not Arrived</label>
+            <label>Not Calculated</label>
           </div>
           <div style={{ marginRight: "10px" }}>
             <Radio
-              value="2"
-              checked={filterStatus === "2"}
+              value="4"
+              checked={filterStatus === "4"}
               onChange={handleStatusChange}
             />
-            <label>Arrived</label>
+            <label>Calculated</label>
           </div>
           <div>
             <Radio
@@ -127,43 +126,46 @@ const AdminRequest2 = ({ requestData }: any) => {
           </div>
         </div>
       </div>
-
       <Card sx={{ mb: 4 }}>
         <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
           <Table>
             <TableHead sx={{ backgroundColor: "grey.200" }}>
               <TableRow>
                 <StyledTableCell>User ID</StyledTableCell>
-                <StyledTableCell>Request ID</StyledTableCell>
+                <StyledTableCell>Cart ID</StyledTableCell>
+                <StyledTableCell>Options</StyledTableCell>
                 <StyledTableCell>Status</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.isArray(filteredData) &&
-                filteredData.map((item: any) => (
-                  <TableRow key={item._id}>
-                    <StyledTableCell
-                      align="left"
-                      sx={{ fontWeight: 400, cursor: "pointer" }}
-                    >
-                      {item.user}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="left"
-                      sx={{ fontWeight: 400, cursor: "pointer" }}
-                    >
-                      <Link href={`/requests/${item._id}`}>
-                        {item.request_id}
-                      </Link>
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="left"
-                      sx={{ fontWeight: 400, cursor: "pointer" }}
-                    >
-                      {statusNames[item.status]}
-                    </StyledTableCell>
-                  </TableRow>
-                ))}
+              {filteredData.map((item: any) => (
+                <TableRow key={item._id}>
+                  <StyledTableCell
+                    align="left"
+                    sx={{ fontWeight: 400, cursor: "pointer" }}
+                  >
+                    {item.user}
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align="left"
+                    sx={{ fontWeight: 400, cursor: "pointer" }}
+                  >
+                    <Link href={`/cart/${item._id}`}>{item.cart_id}</Link>
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align="left"
+                    sx={{ fontWeight: 400, cursor: "pointer" }}
+                  >
+                    {item.options}
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align="left"
+                    sx={{ fontWeight: 400, cursor: "pointer" }}
+                  >
+                    {statusNames[item.status]}
+                  </StyledTableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -172,4 +174,4 @@ const AdminRequest2 = ({ requestData }: any) => {
   );
 };
 
-export default AdminRequest2;
+export default AdminCart;

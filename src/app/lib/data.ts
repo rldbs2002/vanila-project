@@ -96,6 +96,16 @@ export async function getAllCartData() {
   return res.json();
 }
 
+export async function getCartsData() {
+  const res = await fetch(`${apiUrl}/carts`, {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  return res.json();
+}
+
 export async function getCartData(id: any) {
   const res = await fetch(`${apiUrl}/cart/${id}`, {
     cache: "no-store",
